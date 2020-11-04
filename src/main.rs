@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 fn main() {
     App::build()
-        // .add_resource(GreetTimer(Timer::from_seconds(2.0, true)))
+        .add_resource(InputTimer::default())
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup.system())
         .add_system(player_movement_system.system())
@@ -11,14 +11,28 @@ fn main() {
 }
 
 struct Player;
+struct InputTimer {
+    up_timer: Option<Timer>,
+    down_timer: Option<Timer>,
+    left_timer: Option<Timer>,
+    right_timer: Option<Timer>,
+}
 
-fn setup(mut commands: Commands,
-    mut materials: ResMut<Assets<ColorMaterial>>
-) {
+impl InputTimer {
+    fn default() -> InputTimer {
+        InputTimer {
+            up_timer: None,
+            down_timer: None,
+            left_timer: None,
+            right_timer: None,
+        }
+    }
+}
+
+fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
     commands
         .spawn(Camera2dComponents::default())
         .spawn(UiCameraComponents::default())
-
         .spawn(SpriteComponents {
             material: materials.add(Color::rgb(0.5, 0.5, 1.0).into()),
             transform: Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
@@ -30,38 +44,30 @@ fn setup(mut commands: Commands,
 
 fn player_movement_system(
     time: Res<Time>,
+    mut timer: ResMut<InputTimer>,
     keyboard_input: Res<Input<KeyCode>>,
     mut query: Query<(&Player, &mut Transform)>,
 ) {
     for (player, mut transform) in query.iter_mut() {
-        let mut x_direction = 0.0;
+        // can only move in one direction per step
+        // debounce movement in each direction
         if keyboard_input.pressed(KeyCode::Left) {
-            x_direction -= 1.0;
+            if timer.left_timer.is_none() || timer.left_timer.as_ref().unwrap().just_finished {
+                let translation = &mut transform.translation;
+                // move the paddle horizontally
+                *translation.x_mut() -= 10.0;
+                *translation.x_mut() = translation.x().min(300.0).max(-300.0);
+            }
+
+            if let Some(t) = &timer.left_timer {
+                let mut update = t.clone();
+                update.tick(time.delta_seconds);
+                timer.left_timer = Some(update);
+            } else {
+                timer.left_timer = Some(Timer::from_seconds(0.2, true));
+            }
+        } else {
+            timer.left_timer = None;
         }
-
-        if keyboard_input.pressed(KeyCode::Right) {
-            x_direction += 1.0;
-        }
-
-        let translation = &mut transform.translation;
-        // move the paddle horizontally
-        *translation.x_mut() += time.delta_seconds * x_direction * 100.0;
-        // bound the paddle within the walls
-        *translation.x_mut() = translation.x().min(380.0).max(-380.0);
-
-        let mut y_direction = 0.0;
-        if keyboard_input.pressed(KeyCode::Down) {
-            y_direction -= 1.0;
-        }
-
-        if keyboard_input.pressed(KeyCode::Up) {
-            y_direction += 1.0;
-        }
-
-        let translation = &mut transform.translation;
-        // move the paddle horizontally
-        *translation.y_mut() += time.delta_seconds * y_direction * 100.0;
-        // bound the paddle within the walls
-        *translation.y_mut() = translation.y().min(380.0).max(-380.0);
     }
 }
