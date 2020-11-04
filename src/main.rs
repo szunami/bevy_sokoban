@@ -18,6 +18,8 @@ struct InputTimer {
     right_timer: Option<Timer>,
 }
 
+struct Box;
+
 impl InputTimer {
     fn default() -> InputTimer {
         InputTimer {
@@ -33,13 +35,23 @@ fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
     commands
         .spawn(Camera2dComponents::default())
         .spawn(UiCameraComponents::default())
+
         .spawn(SpriteComponents {
             material: materials.add(Color::rgb(0.5, 0.5, 1.0).into()),
             transform: Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
             sprite: Sprite::new(Vec2::new(10.0, 10.0)),
             ..Default::default()
         })
-        .with(Player);
+        .with(Player)
+
+
+        .spawn(SpriteComponents {
+            material: materials.add(Color::rgb(1.0, 0.5, 1.0).into()),
+            transform: Transform::from_translation(Vec3::new(-50.0, 0.0, 0.0)),
+            sprite: Sprite::new(Vec2::new(10.0, 10.0)),
+            ..Default::default()
+        })
+        .with(Box);
 }
 
 fn player_movement_system(
