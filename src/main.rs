@@ -63,23 +63,17 @@ fn player_movement_system(
     for (player, mut transform) in query.iter_mut() {
         // can only move in one direction per step
         // debounce movement in each direction
-        if keyboard_input.pressed(KeyCode::Left) {
-            if timer.left_timer.is_none() || timer.left_timer.as_ref().unwrap().just_finished {
-                let translation = &mut transform.translation;
-                // move the paddle horizontally
-                *translation.x_mut() -= 10.0;
-                *translation.x_mut() = translation.x().min(300.0).max(-300.0);
-            }
-
-            if let Some(t) = &timer.left_timer {
-                let mut update = t.clone();
-                update.tick(time.delta_seconds);
-                timer.left_timer = Some(update);
-            } else {
-                timer.left_timer = Some(Timer::from_seconds(0.2, true));
-            }
-        } else {
-            timer.left_timer = None;
+        if keyboard_input.just_pressed(KeyCode::Left) {
+            let translation = &mut transform.translation;
+            // move the paddle horizontally
+            *translation.x_mut() -= 10.0;
+            *translation.x_mut() = translation.x().min(300.0).max(-300.0);
+        }
+        if keyboard_input.just_pressed(KeyCode::Right) {
+            let translation = &mut transform.translation;
+            // move the paddle horizontally
+            *translation.x_mut() += 10.0;
+            *translation.x_mut() = translation.x().min(300.0).max(-300.0);
         }
     }
 }
