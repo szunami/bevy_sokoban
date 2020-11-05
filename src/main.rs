@@ -2,7 +2,6 @@ use bevy::prelude::*;
 
 fn main() {
     App::build()
-        .add_resource(InputTimer::default())
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup.system())
         .add_system(player_movement_system.system())
@@ -11,25 +10,8 @@ fn main() {
 }
 
 struct Player;
-struct InputTimer {
-    up_timer: Option<Timer>,
-    down_timer: Option<Timer>,
-    left_timer: Option<Timer>,
-    right_timer: Option<Timer>,
-}
 
 struct Box;
-
-impl InputTimer {
-    fn default() -> InputTimer {
-        InputTimer {
-            up_timer: None,
-            down_timer: None,
-            left_timer: None,
-            right_timer: None,
-        }
-    }
-}
 
 fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
     commands
@@ -55,12 +37,10 @@ fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
 }
 
 fn player_movement_system(
-    time: Res<Time>,
-    mut timer: ResMut<InputTimer>,
     keyboard_input: Res<Input<KeyCode>>,
     mut query: Query<(&Player, &mut Transform)>,
 ) {
-    for (player, mut transform) in query.iter_mut() {
+    for (_player, mut transform) in query.iter_mut() {
         // can only move in one direction per step
         // debounce movement in each direction
         if keyboard_input.just_pressed(KeyCode::Left) {
