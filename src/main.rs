@@ -54,7 +54,7 @@ fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
         .with(GridLocation(-7, 0))
         .with(Box);
 
-        commands
+    commands
         .spawn(SpriteComponents {
             material: materials.add(Color::rgb(1.0, 0.3, 0.7).into()),
             transform: Transform::from_translation(Vec3::new(-100.0, 0.0, 0.0)),
@@ -64,7 +64,7 @@ fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
         .with(GridLocation(-10, 0))
         .with(Wall);
 
-        commands
+    commands
         .spawn(SpriteComponents {
             material: materials.add(Color::rgb(1.0, 0.5, 1.0).into()),
             transform: Transform::from_translation(Vec3::new(50.0, 0.0, 0.0)),
@@ -84,7 +84,7 @@ fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
         .with(GridLocation(7, 0))
         .with(Box);
 
-        commands
+    commands
         .spawn(SpriteComponents {
             material: materials.add(Color::rgb(1.0, 0.3, 0.7).into()),
             transform: Transform::from_translation(Vec3::new(100.0, 0.0, 0.0)),
@@ -104,17 +104,16 @@ fn player_movement_system(
     let immovables: HashMap<GridLocation, Entity> = {
         let mut tmp = HashMap::new();
 
-        for (box_entity, b, grid_location) in wall_query.iter() {
+        for (box_entity, _b, grid_location) in wall_query.iter() {
             tmp.insert(GridLocation(grid_location.0, grid_location.1), box_entity);
         }
         tmp
     };
 
-
     let movables: HashMap<GridLocation, Entity> = {
         let mut tmp = HashMap::new();
 
-        for (box_entity, b, grid_location) in box_query.iter_mut() {
+        for (box_entity, _b, grid_location) in box_query.iter_mut() {
             tmp.insert(GridLocation(grid_location.0, grid_location.1), box_entity);
         }
         tmp
@@ -123,7 +122,7 @@ fn player_movement_system(
     for (_e, _player, mut grid_location) in people_query.iter_mut() {
         let mut to_move: Vec<Entity> = vec![];
         let mut new_x = grid_location.0;
-        let mut new_y = grid_location.1;
+        let new_y = grid_location.1;
         let mut delta = 0;
         // can only move in one direction per step
         // debounce movement in each direction
@@ -142,7 +141,7 @@ fn player_movement_system(
             to_move.push(*movable);
             new_x += delta;
         }
-        if let Some(immovable) = immovables.get(&GridLocation(new_x, new_y)) {
+        if let Some(_immovable) = immovables.get(&GridLocation(new_x, new_y)) {
             continue;
         }
         grid_location.0 += delta;
