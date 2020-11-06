@@ -121,7 +121,6 @@ fn setup_goal(
         .with(Goal);
 }
 
-
 fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
     commands
         .spawn(Camera2dComponents::default())
