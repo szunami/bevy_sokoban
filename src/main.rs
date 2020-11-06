@@ -36,8 +36,8 @@ impl ops::Add<GridLocation> for GridLocation {
     }
 }
 
-const SPRITE_WIDTH: f32 = 20.0;
-const SPRITE_HEIGHT: f32 = 20.0;
+const SPRITE_WIDTH: f32 = 50.0;
+const SPRITE_HEIGHT: f32 = 50.0;
 
 fn setup_player(
     grid_location: GridLocation,
@@ -88,7 +88,7 @@ fn setup_wall(
 ) {
     commands
         .spawn(SpriteComponents {
-            material: materials.add(Color::rgb(1.0, 0.3, 0.7).into()),
+            material: materials.add(Color::rgb(0.1, 0.1, 0.1).into()),
             transform: Transform::from_translation(Vec3::new(
                 SPRITE_WIDTH * grid_location.0 as f32,
                 SPRITE_HEIGHT * grid_location.1 as f32,
@@ -129,33 +129,115 @@ fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
     // 11 high
     // 19 wide
 
-    setup_wall(GridLocation(-9, 0), &mut commands, &mut materials);
+    setup_wall(GridLocation(-9, 1), &mut commands, &mut materials);
+    setup_wall(GridLocation(-9, -0), &mut commands, &mut materials);
     setup_wall(GridLocation(-9, -1), &mut commands, &mut materials);
     setup_wall(GridLocation(-9, -2), &mut commands, &mut materials);
-    setup_wall(GridLocation(-9, -3), &mut commands, &mut materials);
 
-    setup_wall(GridLocation(-8, -3), &mut commands, &mut materials);
-    setup_wall(GridLocation(-7, -3), &mut commands, &mut materials);
-    setup_wall(GridLocation(-6, -3), &mut commands, &mut materials);
+    setup_wall(GridLocation(-8, -2), &mut commands, &mut materials);
+    setup_wall(GridLocation(-7, -2), &mut commands, &mut materials);
+    setup_wall(GridLocation(-6, -2), &mut commands, &mut materials);
+    setup_wall(GridLocation(-5, -2), &mut commands, &mut materials);
+    
     setup_wall(GridLocation(-5, -3), &mut commands, &mut materials);
-    
     setup_wall(GridLocation(-5, -4), &mut commands, &mut materials);
-    setup_wall(GridLocation(-5, -5), &mut commands, &mut materials);
 
-    setup_wall(GridLocation(-4, -5), &mut commands, &mut materials);
-    setup_wall(GridLocation(-3, -5), &mut commands, &mut materials);
-    setup_wall(GridLocation(-2, -5), &mut commands, &mut materials);
-    setup_wall(GridLocation(-1, -5), &mut commands, &mut materials);
-    setup_wall(GridLocation(0, -5), &mut commands, &mut materials);
-    setup_wall(GridLocation(1, -5), &mut commands, &mut materials);
+    setup_wall(GridLocation(-4, -4), &mut commands, &mut materials);
+    setup_wall(GridLocation(-3, -4), &mut commands, &mut materials);
+    setup_wall(GridLocation(-2, -4), &mut commands, &mut materials);
+    setup_wall(GridLocation(-1, -4), &mut commands, &mut materials);
+    setup_wall(GridLocation(0, -4), &mut commands, &mut materials);
+    setup_wall(GridLocation(1, -4), &mut commands, &mut materials);
+
+    setup_wall(GridLocation(1, -3), &mut commands, &mut materials);
+    setup_wall(GridLocation(2, -3), &mut commands, &mut materials);
+    setup_wall(GridLocation(3, -3), &mut commands, &mut materials);
+    setup_wall(GridLocation(4, -3), &mut commands, &mut materials);
+    setup_wall(GridLocation(5, -3), &mut commands, &mut materials);
+    setup_wall(GridLocation(6, -3), &mut commands, &mut materials);
+    setup_wall(GridLocation(7, -3), &mut commands, &mut materials);
+    setup_wall(GridLocation(8, -3), &mut commands, &mut materials);
+    setup_wall(GridLocation(9, -3), &mut commands, &mut materials);
     
-    // setup_player(GridLocation(3, 0), &mut commands, &mut materials);
-    // setup_box(GridLocation(-5, 0), &mut commands, &mut materials);
-    // setup_box(GridLocation(-7, 0), &mut commands, &mut materials);
-    // setup_wall(GridLocation(-10, 0), &mut commands, &mut materials);
-    // setup_box(GridLocation(5, 0), &mut commands, &mut materials);
-    // setup_box(GridLocation(7, 0), &mut commands, &mut materials);
-    setup_goal(GridLocation(20, 0), &mut commands, &mut materials);
+    setup_wall(GridLocation(9, -2), &mut commands, &mut materials);
+    setup_wall(GridLocation(9, -1), &mut commands, &mut materials);
+    setup_wall(GridLocation(9, -0), &mut commands, &mut materials);
+    setup_wall(GridLocation(9, 1), &mut commands, &mut materials);
+
+    setup_wall(GridLocation(8, 1), &mut commands, &mut materials);
+    setup_wall(GridLocation(7, 1), &mut commands, &mut materials);
+    setup_wall(GridLocation(6, 1), &mut commands, &mut materials);
+    setup_wall(GridLocation(5, 1), &mut commands, &mut materials);
+    setup_wall(GridLocation(4, 1), &mut commands, &mut materials);
+
+    setup_wall(GridLocation(4, 0), &mut commands, &mut materials);
+    setup_wall(GridLocation(3, 0), &mut commands, &mut materials);
+    setup_wall(GridLocation(2, 0), &mut commands, &mut materials);
+    setup_wall(GridLocation(1, 0), &mut commands, &mut materials);
+    setup_wall(GridLocation(0, 0), &mut commands, &mut materials);
+
+    setup_wall(GridLocation(0, 1), &mut commands, &mut materials);
+    setup_wall(GridLocation(0, 2), &mut commands, &mut materials);
+    setup_wall(GridLocation(0, 3), &mut commands, &mut materials);
+
+    setup_wall(GridLocation(-1, 3), &mut commands, &mut materials);
+    setup_wall(GridLocation(-1, 4), &mut commands, &mut materials);
+    setup_wall(GridLocation(-1, 5), &mut commands, &mut materials);
+    setup_wall(GridLocation(-1, 6), &mut commands, &mut materials);
+
+    setup_wall(GridLocation(-2, 6), &mut commands, &mut materials);
+    setup_wall(GridLocation(-3, 6), &mut commands, &mut materials);
+    setup_wall(GridLocation(-4, 6), &mut commands, &mut materials);
+    setup_wall(GridLocation(-5, 6), &mut commands, &mut materials);
+
+    setup_wall(GridLocation(-5, 5), &mut commands, &mut materials);
+    setup_wall(GridLocation(-5, 4), &mut commands, &mut materials);
+    setup_wall(GridLocation(-5, 3), &mut commands, &mut materials);
+
+    setup_wall(GridLocation(-6, 3), &mut commands, &mut materials);
+    setup_wall(GridLocation(-7, 3), &mut commands, &mut materials);
+
+    setup_wall(GridLocation(-7, 2), &mut commands, &mut materials);
+    setup_wall(GridLocation(-7, 1), &mut commands, &mut materials);
+
+    setup_wall(GridLocation(-8, 1), &mut commands, &mut materials);
+
+    // stray walls
+    setup_wall(GridLocation(-5, 0), &mut commands, &mut materials);
+    setup_wall(GridLocation(-5, 1), &mut commands, &mut materials);
+
+    setup_wall(GridLocation(-3, 0), &mut commands, &mut materials);
+    setup_wall(GridLocation(-3, 1), &mut commands, &mut materials);
+    setup_wall(GridLocation(-2, 0), &mut commands, &mut materials);
+    setup_wall(GridLocation(-2, 1), &mut commands, &mut materials);
+
+    setup_wall(GridLocation(-3, -2), &mut commands, &mut materials);
+    setup_wall(GridLocation(-2, -2), &mut commands, &mut materials);
+    setup_wall(GridLocation(-2, -2), &mut commands, &mut materials);
+
+    setup_wall(GridLocation(1, -2), &mut commands, &mut materials);
+
+    setup_wall(GridLocation(3, -2), &mut commands, &mut materials);
+    setup_wall(GridLocation(4, -2), &mut commands, &mut materials);
+
+    setup_box(GridLocation(-7, -1), &mut commands, &mut materials);
+    
+    setup_box(GridLocation(-4, -1), &mut commands, &mut materials);
+    setup_box(GridLocation(-4, 2), &mut commands, &mut materials);
+    setup_box(GridLocation(-4, 4), &mut commands, &mut materials);
+
+    setup_box(GridLocation(-2, 2), &mut commands, &mut materials);
+    setup_box(GridLocation(-2, 3), &mut commands, &mut materials);
+
+    setup_player(GridLocation(2, -2), &mut commands, &mut materials);
+
+    setup_goal(GridLocation(7, 0), &mut commands, &mut materials);
+    setup_goal(GridLocation(7, -1), &mut commands, &mut materials);
+    setup_goal(GridLocation(7, -2), &mut commands, &mut materials);
+
+    setup_goal(GridLocation(8, 0), &mut commands, &mut materials);
+    setup_goal(GridLocation(8, -1), &mut commands, &mut materials);
+    setup_goal(GridLocation(8, -2), &mut commands, &mut materials);
 }
 
 fn player_movement_system(
@@ -233,8 +315,8 @@ fn player_movement_system(
 
 fn render_grid_location_to_transform(mut query: Query<(&GridLocation, &mut Transform)>) {
     for (grid_location, mut transform) in query.iter_mut() {
-        *transform.translation.x_mut() = 10. * grid_location.0 as f32;
-        *transform.translation.y_mut() = 10. * grid_location.1 as f32;
+        *transform.translation.x_mut() = SPRITE_WIDTH * grid_location.0 as f32;
+        *transform.translation.y_mut() = SPRITE_HEIGHT * grid_location.1 as f32;
     }
 }
 
