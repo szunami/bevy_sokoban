@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use std::collections::HashMap;
+use std::{collections::HashMap, ops};
 
 fn main() {
     App::build()
@@ -18,8 +18,16 @@ struct Movable;
 
 struct Wall;
 
-#[derive(Hash, Eq, PartialEq, Debug)]
+#[derive(Hash, Eq, PartialEq, Debug, Clone, Copy)]
 struct GridLocation(i32, i32);
+
+impl ops::Add<GridLocation> for GridLocation {
+    type Output = GridLocation;
+
+    fn add(self, rhs: GridLocation) -> Self::Output {
+        GridLocation(self.0 + rhs.0, self.1 + rhs.1)
+    }
+}
 
 fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
     commands
@@ -110,16 +118,19 @@ fn player_movement_system(
         Query<(Entity, &Player, &GridLocation)>,
     )>,
 ) {
-    let mut delta = 0;
-    if keyboard_input.just_pressed(KeyCode::Left) {
-        delta = -1;
-    }
-    if keyboard_input.just_pressed(KeyCode::Right) {
-        delta = 1;
-    }
-    if delta == 0 {
-        return;
-    }
+    let delta = {
+        let mut delta = GridLocation(0, 0);
+        if keyboard_input.just_pressed(KeyCode::Left) {
+            delta = GridLocation(-1, 0);
+        }
+        if keyboard_input.just_pressed(KeyCode::Right) {
+            delta = GridLocation(1, 0);
+        }
+        if delta == GridLocation(0, 0) {
+            return;
+        }
+        delta
+    };
 
     let immovables: HashMap<GridLocation, Entity> = {
         let mut tmp = HashMap::new();
@@ -148,13 +159,13 @@ fn player_movement_system(
     for (_player_entity, _player, player_grid_location) in set.q1().iter() {
         let mut tmp_to_move = vec![];
 
-        let mut current_x = player_grid_location.0;
-        let current_y = player_grid_location.1;
-        while let Some(movable) = movables.get(&GridLocation(current_x, current_y)) {
+        let mut current_loc = *player_grid_location;
+
+        while let Some(movable) = movables.get(&current_loc) {
             tmp_to_move.push(*movable);
-            current_x += delta;
+            current_loc = current_loc + delta;
         }
-        if let Some(_immovable) = immovables.get(&GridLocation(current_x, current_y)) {
+        if let Some(_immovable) = immovables.get(&current_loc) {
             continue;
         }
         to_move.append(&mut tmp_to_move);
@@ -162,7 +173,7 @@ fn player_movement_system(
 
     for loc in to_move {
         let mut grid_location: Mut<GridLocation> = set.q0_mut().get_component_mut(loc).unwrap();
-        grid_location.0 += delta;
+        *grid_location = *grid_location + delta;
     }
 }
 
