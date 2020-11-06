@@ -1,5 +1,8 @@
 use bevy::{app::AppExit, prelude::*};
-use std::{collections::{HashMap, HashSet}, ops};
+use std::{
+    collections::{HashMap, HashSet},
+    ops,
+};
 
 fn main() {
     App::build()
@@ -33,96 +36,104 @@ impl ops::Add<GridLocation> for GridLocation {
     }
 }
 
+const SPRITE_WIDTH: f32 = 10.0;
+const SPRITE_HEIGHT: f32 = 10.0;
+
+fn setup_player(
+    grid_location: GridLocation,
+    commands: &mut Commands,
+    materials: &mut ResMut<Assets<ColorMaterial>>,
+) {
+    commands
+        .spawn(SpriteComponents {
+            material: materials.add(Color::rgb(0.5, 0.5, 1.0).into()),
+            transform: Transform::from_translation(Vec3::new(
+                SPRITE_WIDTH * grid_location.0 as f32,
+                SPRITE_HEIGHT * grid_location.1 as f32,
+                0.0,
+            )),
+            sprite: Sprite::new(Vec2::new(SPRITE_WIDTH, SPRITE_HEIGHT)),
+            ..Default::default()
+        })
+        .with(grid_location)
+        .with(Movable)
+        .with(Player);
+}
+
+fn setup_box(
+    grid_location: GridLocation,
+    commands: &mut Commands,
+    materials: &mut ResMut<Assets<ColorMaterial>>,
+) {
+    commands
+        .spawn(SpriteComponents {
+            material: materials.add(Color::rgb(1.0, 0.5, 1.0).into()),
+            transform: Transform::from_translation(Vec3::new(
+                SPRITE_WIDTH * grid_location.0 as f32,
+                SPRITE_HEIGHT * grid_location.1 as f32,
+                0.0,
+            )),
+            sprite: Sprite::new(Vec2::new(SPRITE_WIDTH, SPRITE_HEIGHT)),
+            ..Default::default()
+        })
+        .with(grid_location)
+        .with(Movable)
+        .with(Box);
+}
+
+fn setup_wall(
+    grid_location: GridLocation,
+    commands: &mut Commands,
+    materials: &mut ResMut<Assets<ColorMaterial>>,
+) {
+    commands
+        .spawn(SpriteComponents {
+            material: materials.add(Color::rgb(1.0, 0.3, 0.7).into()),
+            transform: Transform::from_translation(Vec3::new(
+                SPRITE_WIDTH * grid_location.0 as f32,
+                SPRITE_HEIGHT * grid_location.1 as f32,
+                0.0,
+            )),
+            sprite: Sprite::new(Vec2::new(SPRITE_WIDTH, SPRITE_HEIGHT)),
+            ..Default::default()
+        })
+        .with(grid_location)
+        .with(Wall);
+}
+
+fn setup_goal(
+    grid_location: GridLocation,
+    commands: &mut Commands,
+    materials: &mut ResMut<Assets<ColorMaterial>>,
+) {
+    commands
+        .spawn(SpriteComponents {
+            material: materials.add(Color::rgb(1.0, 0.3, 0.7).into()),
+            transform: Transform::from_translation(Vec3::new(
+                SPRITE_WIDTH * grid_location.0 as f32,
+                SPRITE_HEIGHT * grid_location.1 as f32,
+                0.0,
+            )),
+            sprite: Sprite::new(Vec2::new(0.5 * SPRITE_WIDTH, 0.5 * SPRITE_HEIGHT)),
+            ..Default::default()
+        })
+        .with(grid_location)
+        .with(Goal);
+}
+
+
 fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
     commands
         .spawn(Camera2dComponents::default())
         .spawn(UiCameraComponents::default());
 
-    commands
-        .spawn(SpriteComponents {
-            material: materials.add(Color::rgb(0.5, 0.5, 1.0).into()),
-            transform: Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
-            sprite: Sprite::new(Vec2::new(10.0, 10.0)),
-            ..Default::default()
-        })
-        .with(GridLocation(0, 0))
-        .with(Movable)
-        .with(Player);
-
-    commands
-        .spawn(SpriteComponents {
-            material: materials.add(Color::rgb(1.0, 0.5, 1.0).into()),
-            transform: Transform::from_translation(Vec3::new(-50.0, 0.0, 0.0)),
-            sprite: Sprite::new(Vec2::new(10.0, 10.0)),
-            ..Default::default()
-        })
-        .with(GridLocation(-5, 0))
-        .with(Movable)
-        .with(Box);
-
-    commands
-        .spawn(SpriteComponents {
-            material: materials.add(Color::rgb(1.0, 0.5, 1.0).into()),
-            transform: Transform::from_translation(Vec3::new(-70.0, 0.0, 0.0)),
-            sprite: Sprite::new(Vec2::new(10.0, 10.0)),
-            ..Default::default()
-        })
-        .with(GridLocation(-7, 0))
-        .with(Movable)
-        .with(Box);
-
-    commands
-        .spawn(SpriteComponents {
-            material: materials.add(Color::rgb(1.0, 0.3, 0.7).into()),
-            transform: Transform::from_translation(Vec3::new(-100.0, 0.0, 0.0)),
-            sprite: Sprite::new(Vec2::new(10.0, 10.0)),
-            ..Default::default()
-        })
-        .with(GridLocation(-10, 0))
-        .with(Wall);
-
-    commands
-        .spawn(SpriteComponents {
-            material: materials.add(Color::rgb(1.0, 0.5, 1.0).into()),
-            transform: Transform::from_translation(Vec3::new(50.0, 0.0, 0.0)),
-            sprite: Sprite::new(Vec2::new(10.0, 10.0)),
-            ..Default::default()
-        })
-        .with(GridLocation(5, 0))
-        .with(Movable)
-        .with(Box);
-
-    commands
-        .spawn(SpriteComponents {
-            material: materials.add(Color::rgb(1.0, 0.5, 1.0).into()),
-            transform: Transform::from_translation(Vec3::new(70.0, 0.0, 0.0)),
-            sprite: Sprite::new(Vec2::new(10.0, 10.0)),
-            ..Default::default()
-        })
-        .with(GridLocation(7, 0))
-        .with(Movable)
-        .with(Box);
-
-    commands
-        .spawn(SpriteComponents {
-            material: materials.add(Color::rgb(1.0, 0.3, 0.7).into()),
-            transform: Transform::from_translation(Vec3::new(100.0, 0.0, 0.0)),
-            sprite: Sprite::new(Vec2::new(10.0, 10.0)),
-            ..Default::default()
-        })
-        .with(GridLocation(10, 0))
-        .with(Wall);
-
-
-        commands
-        .spawn(SpriteComponents {
-            material: materials.add(Color::rgb(0.8, 0.4, 0.7).into()),
-            transform: Transform::from_translation(Vec3::new(100.0, 0.0, 0.0)),
-            sprite: Sprite::new(Vec2::new(2.0, 2.0)),
-            ..Default::default()
-        })
-        .with(GridLocation(20, 0))
-        .with(Goal);
+    setup_player(GridLocation(0, 0), &mut commands, &mut materials);
+    setup_box(GridLocation(-5, 0), &mut commands, &mut materials);
+    setup_box(GridLocation(-7, 0), &mut commands, &mut materials);
+    setup_wall(GridLocation(-10, 0), &mut commands, &mut materials);
+    setup_box(GridLocation(5, 0), &mut commands, &mut materials);
+    setup_box(GridLocation(7, 0), &mut commands, &mut materials);
+    setup_goal(GridLocation(20, 0), &mut commands, &mut materials);
 }
 
 fn player_movement_system(
@@ -211,20 +222,18 @@ fn goal_system(
     box_query: Query<(&Box, &GridLocation)>,
     goal_query: Query<(&Goal, &GridLocation)>,
 ) {
-
     let boxes: HashSet<GridLocation> = {
         let mut tmp = HashSet::new();
         for (_box, grid_location) in box_query.iter() {
-            tmp.insert(
-                GridLocation(grid_location.0, grid_location.1),
-            );
+            tmp.insert(GridLocation(grid_location.0, grid_location.1));
         }
         tmp
     };
 
-    if goal_query.iter().all(|(_goal, grid_location)| {
-        boxes.contains(grid_location)
-    }) {
+    if goal_query
+        .iter()
+        .all(|(_goal, grid_location)| boxes.contains(grid_location))
+    {
         println!("You win!");
         app_exit_events.send(AppExit);
     }
