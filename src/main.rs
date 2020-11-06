@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use std::{collections::HashMap, ops};
+use std::{collections::{HashMap, HashSet}, ops};
 
 fn main() {
     App::build()
@@ -7,6 +7,8 @@ fn main() {
         .add_startup_system(setup.system())
         .add_system(player_movement_system.system())
         .add_system(render_grid_location_to_transform.system())
+        .add_system(goal_system.system())
+        .add_system(bevy::input::system::exit_on_esc_system.system())
         .run();
 }
 
@@ -17,6 +19,8 @@ struct Box;
 struct Movable;
 
 struct Wall;
+
+struct Goal;
 
 #[derive(Hash, Eq, PartialEq, Debug, Clone, Copy)]
 struct GridLocation(i32, i32);
@@ -108,6 +112,17 @@ fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
         })
         .with(GridLocation(10, 0))
         .with(Wall);
+
+
+        commands
+        .spawn(SpriteComponents {
+            material: materials.add(Color::rgb(0.8, 0.4, 0.7).into()),
+            transform: Transform::from_translation(Vec3::new(100.0, 0.0, 0.0)),
+            sprite: Sprite::new(Vec2::new(2.0, 2.0)),
+            ..Default::default()
+        })
+        .with(GridLocation(20, 0))
+        .with(Goal);
 }
 
 fn player_movement_system(
@@ -187,5 +202,27 @@ fn render_grid_location_to_transform(mut query: Query<(&GridLocation, &mut Trans
     for (grid_location, mut transform) in query.iter_mut() {
         *transform.translation.x_mut() = 10. * grid_location.0 as f32;
         *transform.translation.y_mut() = 10. * grid_location.1 as f32;
+    }
+}
+
+fn goal_system(
+    box_query: Query<(&Box, &GridLocation)>,
+    goal_query: Query<(&Goal, &GridLocation)>,
+) {
+
+    let boxes: HashSet<GridLocation> = {
+        let mut tmp = HashSet::new();
+        for (_box, grid_location) in box_query.iter() {
+            tmp.insert(
+                GridLocation(grid_location.0, grid_location.1),
+            );
+        }
+        tmp
+    };
+
+    if goal_query.iter().all(|(_goal, grid_location)| {
+        boxes.contains(grid_location)
+    }) {
+        println!("You win!");
     }
 }
