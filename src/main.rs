@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::{app::AppExit, prelude::*};
 use std::{collections::{HashMap, HashSet}, ops};
 
 fn main() {
@@ -206,6 +206,8 @@ fn render_grid_location_to_transform(mut query: Query<(&GridLocation, &mut Trans
 }
 
 fn goal_system(
+    mut app_exit_events: ResMut<Events<AppExit>>,
+
     box_query: Query<(&Box, &GridLocation)>,
     goal_query: Query<(&Goal, &GridLocation)>,
 ) {
@@ -224,5 +226,6 @@ fn goal_system(
         boxes.contains(grid_location)
     }) {
         println!("You win!");
+        app_exit_events.send(AppExit);
     }
 }
