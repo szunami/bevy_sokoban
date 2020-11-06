@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use std::collections::HashMap;
 
 fn main() {
     App::build()
@@ -13,13 +14,15 @@ struct Player;
 
 struct Box;
 
+#[derive(Hash, Eq, PartialEq, Debug)]
 struct GridLocation(i32, i32);
 
 fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
     commands
         .spawn(Camera2dComponents::default())
-        .spawn(UiCameraComponents::default())
+        .spawn(UiCameraComponents::default());
 
+    commands
         .spawn(SpriteComponents {
             material: materials.add(Color::rgb(0.5, 0.5, 1.0).into()),
             transform: Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
@@ -27,9 +30,9 @@ fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
             ..Default::default()
         })
         .with(GridLocation(0, 0))
-        .with(Player)
+        .with(Player);
 
-
+    commands
         .spawn(SpriteComponents {
             material: materials.add(Color::rgb(1.0, 0.5, 1.0).into()),
             transform: Transform::from_translation(Vec3::new(-50.0, 0.0, 0.0)),
@@ -42,23 +45,47 @@ fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
 
 fn player_movement_system(
     keyboard_input: Res<Input<KeyCode>>,
-    mut query: Query<(&Player, &mut GridLocation)>,
+    mut box_query: Query<(Entity, &Box, &mut GridLocation)>,
+    mut people_query: Query<(Entity, &Player, &mut GridLocation)>,
 ) {
-    for (_player, mut grid_location) in query.iter_mut() {
+    let movables: HashMap<GridLocation, Entity> = {
+        let mut tmp = HashMap::new();
+
+        for (box_entity, b, grid_location) in box_query.iter_mut() {
+            tmp.insert(GridLocation(grid_location.0, grid_location.1), box_entity);
+        }
+        tmp
+    };
+
+
+    for (_e, _player, mut grid_location) in people_query.iter_mut() {
+        let mut to_move: Vec<Entity> = vec![];
+        let mut new_x = grid_location.0;
+        let mut new_y = grid_location.1;
+        let mut delta = 0;
         // can only move in one direction per step
         // debounce movement in each direction
         if keyboard_input.just_pressed(KeyCode::Left) {
-            grid_location.0 -= 1;
+            delta = -1;
         }
         if keyboard_input.just_pressed(KeyCode::Right) {
-            grid_location.0 += 1;
+            delta = 1;
+        }
+        grid_location.0 += delta;
+        new_x += delta;
+
+        while let Some(movable) = movables.get(&GridLocation(new_x, new_y)) {
+            to_move.push(*movable);
+            new_x += delta;
+        }
+        for loc in to_move {
+            let mut grid_location: Mut<GridLocation> = box_query.get_component_mut(loc).unwrap();
+            grid_location.0 += delta;
         }
     }
 }
 
-fn render_grid_location_to_transform(
-    mut query: Query<(&GridLocation, &mut Transform)>,
-) {
+fn render_grid_location_to_transform(mut query: Query<(&GridLocation, &mut Transform)>) {
     for (grid_location, mut transform) in query.iter_mut() {
         *transform.translation.x_mut() = 10. * grid_location.0 as f32;
         *transform.translation.y_mut() = 10. * grid_location.1 as f32;
