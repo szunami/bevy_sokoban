@@ -36,8 +36,8 @@ impl ops::Add<GridLocation> for GridLocation {
     }
 }
 
-const SPRITE_WIDTH: f32 = 10.0;
-const SPRITE_HEIGHT: f32 = 10.0;
+const SPRITE_WIDTH: f32 = 20.0;
+const SPRITE_HEIGHT: f32 = 20.0;
 
 fn setup_player(
     grid_location: GridLocation,
@@ -126,12 +126,35 @@ fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
         .spawn(Camera2dComponents::default())
         .spawn(UiCameraComponents::default());
 
-    setup_player(GridLocation(0, 0), &mut commands, &mut materials);
-    setup_box(GridLocation(-5, 0), &mut commands, &mut materials);
-    setup_box(GridLocation(-7, 0), &mut commands, &mut materials);
-    setup_wall(GridLocation(-10, 0), &mut commands, &mut materials);
-    setup_box(GridLocation(5, 0), &mut commands, &mut materials);
-    setup_box(GridLocation(7, 0), &mut commands, &mut materials);
+    // 11 high
+    // 19 wide
+
+    setup_wall(GridLocation(-9, 0), &mut commands, &mut materials);
+    setup_wall(GridLocation(-9, -1), &mut commands, &mut materials);
+    setup_wall(GridLocation(-9, -2), &mut commands, &mut materials);
+    setup_wall(GridLocation(-9, -3), &mut commands, &mut materials);
+
+    setup_wall(GridLocation(-8, -3), &mut commands, &mut materials);
+    setup_wall(GridLocation(-7, -3), &mut commands, &mut materials);
+    setup_wall(GridLocation(-6, -3), &mut commands, &mut materials);
+    setup_wall(GridLocation(-5, -3), &mut commands, &mut materials);
+    
+    setup_wall(GridLocation(-5, -4), &mut commands, &mut materials);
+    setup_wall(GridLocation(-5, -5), &mut commands, &mut materials);
+
+    setup_wall(GridLocation(-4, -5), &mut commands, &mut materials);
+    setup_wall(GridLocation(-3, -5), &mut commands, &mut materials);
+    setup_wall(GridLocation(-2, -5), &mut commands, &mut materials);
+    setup_wall(GridLocation(-1, -5), &mut commands, &mut materials);
+    setup_wall(GridLocation(0, -5), &mut commands, &mut materials);
+    setup_wall(GridLocation(1, -5), &mut commands, &mut materials);
+    
+    // setup_player(GridLocation(3, 0), &mut commands, &mut materials);
+    // setup_box(GridLocation(-5, 0), &mut commands, &mut materials);
+    // setup_box(GridLocation(-7, 0), &mut commands, &mut materials);
+    // setup_wall(GridLocation(-10, 0), &mut commands, &mut materials);
+    // setup_box(GridLocation(5, 0), &mut commands, &mut materials);
+    // setup_box(GridLocation(7, 0), &mut commands, &mut materials);
     setup_goal(GridLocation(20, 0), &mut commands, &mut materials);
 }
 
