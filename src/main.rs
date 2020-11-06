@@ -145,7 +145,7 @@ fn player_movement_system(
 
     let mut to_move: Vec<Entity> = vec![];
 
-    for (player_entity, _player, player_grid_location) in set.q1().iter() {
+    for (_player_entity, _player, player_grid_location) in set.q1().iter() {
         let mut tmp_to_move = vec![];
 
         let mut current_x = player_grid_location.0;
