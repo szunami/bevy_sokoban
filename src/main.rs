@@ -126,6 +126,12 @@ fn player_movement_system(
         if keyboard_input.just_pressed(KeyCode::Right) {
             delta = GridLocation(1, 0);
         }
+        if keyboard_input.just_pressed(KeyCode::Down) {
+            delta = GridLocation(0, -1);
+        }
+        if keyboard_input.just_pressed(KeyCode::Up) {
+            delta = GridLocation(0, 1);
+        }
         if delta == GridLocation(0, 0) {
             return;
         }
