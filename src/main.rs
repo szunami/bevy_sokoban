@@ -63,6 +63,36 @@ fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
         })
         .with(GridLocation(-10, 0))
         .with(Wall);
+
+        commands
+        .spawn(SpriteComponents {
+            material: materials.add(Color::rgb(1.0, 0.5, 1.0).into()),
+            transform: Transform::from_translation(Vec3::new(50.0, 0.0, 0.0)),
+            sprite: Sprite::new(Vec2::new(10.0, 10.0)),
+            ..Default::default()
+        })
+        .with(GridLocation(5, 0))
+        .with(Box);
+
+    commands
+        .spawn(SpriteComponents {
+            material: materials.add(Color::rgb(1.0, 0.5, 1.0).into()),
+            transform: Transform::from_translation(Vec3::new(70.0, 0.0, 0.0)),
+            sprite: Sprite::new(Vec2::new(10.0, 10.0)),
+            ..Default::default()
+        })
+        .with(GridLocation(7, 0))
+        .with(Box);
+
+        commands
+        .spawn(SpriteComponents {
+            material: materials.add(Color::rgb(1.0, 0.3, 0.7).into()),
+            transform: Transform::from_translation(Vec3::new(100.0, 0.0, 0.0)),
+            sprite: Sprite::new(Vec2::new(10.0, 10.0)),
+            ..Default::default()
+        })
+        .with(GridLocation(10, 0))
+        .with(Wall);
 }
 
 fn player_movement_system(
