@@ -313,10 +313,17 @@ fn player_movement_system(
     }
 }
 
-fn render_grid_location_to_transform(mut query: Query<(&GridLocation, &mut Transform)>) {
+const LERP_LAMBDA: f32 = 5.0;
+
+fn render_grid_location_to_transform(
+    time: Res<Time>,
+    mut query: Query<(&GridLocation, &mut Transform)>
+) {
     for (grid_location, mut transform) in query.iter_mut() {
-        *transform.translation.x_mut() = SPRITE_WIDTH * grid_location.0 as f32;
-        *transform.translation.y_mut() = SPRITE_HEIGHT * grid_location.1 as f32;
+        let target_x = SPRITE_WIDTH * grid_location.0 as f32;
+        *transform.translation.x_mut() = transform.translation.x() * (1.0 - LERP_LAMBDA * time.delta_seconds) + target_x * LERP_LAMBDA * time.delta_seconds;
+        let target_y = SPRITE_WIDTH * grid_location.1 as f32;
+        *transform.translation.y_mut() = transform.translation.y() * (1.0 - LERP_LAMBDA * time.delta_seconds) + target_y * LERP_LAMBDA * time.delta_seconds;
     }
 }
 
